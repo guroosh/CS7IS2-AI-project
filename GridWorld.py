@@ -2,6 +2,7 @@ import time
 import tkinter as tk
 import random
 import numpy as np
+import bisect
 
 from Graph import Graph
 
@@ -127,7 +128,7 @@ class GridWorld:
                 print(str(l[0]) + "," + str(l[1]) + " : ", end='')
             print()
 
-    def traverse_graph(self, this, key):
+    def dfs(self, this, key):
         graph = self.graph
         adjacent_nodes = graph.adjacency_map[key]
         x = int(key.split(',')[0])
@@ -141,9 +142,36 @@ class GridWorld:
             # print('42', self.is_visited[l[0]][l[1]])
             if self.is_visited[l[0]][l[1]] == 0:
                 # print('43', str(l[0]) + "," + str(l[1]))
-                ret_val = this.traverse_graph(this, str(l[0]) + "," + str(l[1]))
+                ret_val = this.dfs(this, str(l[0]) + "," + str(l[1]))
                 if ret_val == -1:
                     return -1
+
+    def a_star(self, this, key, current_cost):
+        graph = self.graph
+        adjacent_nodes = graph.adjacency_map[key]
+        x = int(key.split(',')[0])
+        y = int(key.split(',')[1])
+        if x == end_x and y == end_y:
+            self.route.append((x, y))
+            return -1
+        self.is_visited[x][y] = 1
+        self.route.append((x, y))
+        estimation_list = []
+        for l in adjacent_nodes:
+            estimated_cost = self.get_heuristics(l[0], l[1]) + current_cost
+            estimation_list.append((l[0], l[1], estimated_cost))
+        estimation_list.sort(key=lambda tup: tup[2])
+        for tup in estimation_list:
+            if self.is_visited[tup[0]][tup[1]] == 0:
+                ret_val = this.a_star(this, str(tup[0]) + "," + str(tup[1]), current_cost + 1)
+                if ret_val == -1:
+                    return -1
+
+    def get_heuristics(self, x, y):
+        # manhattan distance
+        x1 = abs(x - end_x)
+        y1 = abs(y - end_y)
+        return x1 + y1
 
     def move_on_given_route(self):
         route = self.route
@@ -190,8 +218,9 @@ for i in range(number_of_walls):
         obstacles.add((x, y))
 
 data.scan_grid_and_generate_graph()
-# data.print_graph()
-data.traverse_graph(data, '0,0')
+data.print_graph()
+data.dfs(data, '0,0')
+# data.a_star(data, '0,0', 0)
 data.create_grid(m, n, (start_x, start_y), (end_x, end_y), obstacles)
 data.move_on_given_route()
 # data.move_agent()
