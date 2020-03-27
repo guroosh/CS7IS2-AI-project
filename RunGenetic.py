@@ -3,6 +3,32 @@ import Functions
 from GridWorld import GridWorld
 
 
+def crossover(list1, list2):
+    return_list = []
+    for i in range(min(len(list1), len(list2))):
+        path1 = list1[i]
+        path2 = list2[i]
+        common_nodes = []
+        for node in path1:
+            if node in path2:
+                common_nodes.append(node)
+        if len(common_nodes) > 0:
+            random_common_node = random.choice(common_nodes)
+            index1 = path1.index(random_common_node)
+            index2 = path2.index(random_common_node)
+            child1 = path1[:index1]
+            child1.extend(path2[index2:])
+            child2 = path2[:index2]
+            child2.extend(path1[index1:])
+            return_list.append(child1)
+            return_list.append(child2)
+    return_list.extend(list1)
+    return_list.extend(list2)
+    print(len(list1))
+    print(len(list2))
+    print(len(return_list))
+    return return_list
+
 def get_random_path(grid_world, start_node, end_node, graph):
     def recursive_function(key):
         adjacent_nodes = graph.adjacency_map[key]
@@ -66,6 +92,8 @@ while path:
     second_list.append(sec_pop)
     path.pop(0)
     count = count + 1
+
+crossover(first_list, second_list)
 
 for i in first_list:
     i_count = len(i)
