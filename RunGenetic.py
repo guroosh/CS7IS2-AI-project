@@ -63,25 +63,28 @@ def mutation(crossover_list):
         random_nodes = []
         # rand_idx1 = (4,4)
         # rand_idx2 = (4,4)
-        rand_idx1 = random.choice(path1)
-        rand_idx2 = random.choice(path1)
-        if rand_idx2 == rand_idx1:
-            rand_idx2 = random.choice(path1)
-        random_nodes.append(rand_idx1)
-        random_nodes.append(rand_idx2)
+
+        random_nodes = random.sample(path1, 2)
+        print(random_nodes)
+        # rand_idx1 = random.choice(path1)
+        # rand_idx2 = random.choice(path1)
+        # if rand_idx2 == rand_idx1:
+        #     rand_idx2 = random.choice(path1)
+        # random_nodes.append(rand_idx1)
+        # random_nodes.append(rand_idx2)
         if len(random_nodes) > 0:
             index1 = path1.index(random_nodes[0])
             index2 = path1.index(random_nodes[1])
             if index1<index2:
                 child1 = path1[:index1]
-                rand_path = get_random_path(grid_world,rand_idx2, rand_idx1, grid_world.graph)
+                rand_path = get_random_path(grid_world,random_nodes[1], random_nodes[0], grid_world.graph)
                 child1.extend(rand_path)
                 child2 = path1[index2:]
                 child1.extend(child2)
                 return_list.extend(child1)
             if index1>index2:
                 child1 = path1[:index2]
-                rand_path = get_random_path(grid_world, rand_idx1, rand_idx2, grid_world.graph)
+                rand_path = get_random_path(grid_world, random_nodes[0], random_nodes[1], grid_world.graph)
                 child1.extend(rand_path)
                 child2 = path1[index1:]
                 child1.extend(child2)
