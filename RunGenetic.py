@@ -2,6 +2,31 @@ import random
 import Functions
 from GridWorld import GridWorld
 
+def get_random_path(grid_world, start_node, end_node, graph):
+    def recursive_function(key):
+        adjacent_nodes = graph.adjacency_map[key]
+        x = int(key.split(',')[0])
+        y = int(key.split(',')[1])
+        if x == end_x and y == end_y:
+            return -1
+        grid_world.is_visited[x][y] = 1
+        random.shuffle(adjacent_nodes)
+        for l in adjacent_nodes:
+            if grid_world.is_visited[l[0]][l[1]] == 0:
+                ret_val = recursive_function(str(l[0]) + "," + str(l[1]))
+                if ret_val == -1:
+                    inner_final_route.append((l[0], l[1]))
+                    return -1
+
+    # inner_route = []
+    end_x = end_node[0]
+    end_y = end_node[1]
+    inner_final_route = []
+    grid_world.is_visited = [[0] * grid_world.n for temp in range(grid_world.m)]
+    start_key = str(start_node[0]) + ',' + str(start_node[1])
+    recursive_function(start_key)
+    return inner_final_route
+
 
 def crossover(list1, list2):
     return_list = []
@@ -29,30 +54,39 @@ def crossover(list1, list2):
     print(len(return_list))
     return return_list
 
-def get_random_path(grid_world, start_node, end_node, graph):
-    def recursive_function(key):
-        adjacent_nodes = graph.adjacency_map[key]
-        x = int(key.split(',')[0])
-        y = int(key.split(',')[1])
-        if x == end_x and y == end_y:
-            return -1
-        grid_world.is_visited[x][y] = 1
-        random.shuffle(adjacent_nodes)
-        for l in adjacent_nodes:
-            if grid_world.is_visited[l[0]][l[1]] == 0:
-                ret_val = recursive_function(str(l[0]) + "," + str(l[1]))
-                if ret_val == -1:
-                    inner_final_route.append((l[0], l[1]))
-                    return -1
 
-    # inner_route = []
-    end_x = end_node[0]
-    end_y = end_node[1]
-    inner_final_route = []
-    grid_world.is_visited = [[0] * grid_world.n for temp in range(grid_world.m)]
-    start_key = str(start_node[0]) + ',' + str(start_node[1])
-    recursive_function(start_key)
-    return inner_final_route
+def mutation(crossover_list):
+    return_list = []
+    for i in range(len(crossover_list)):
+        path1 = crossover_list[i]
+        random_nodes = []
+        rand_idx1 = random.choice(path1)
+        rand_idx2 = random.choice(path1)
+        if rand_idx2==rand_idx1:
+            rand_idx2 = random.choice(path1)
+        random_nodes.append(rand_idx1)
+        random_nodes.append(rand_idx2)
+        if len(random_nodes) > 0:
+            index1 = path1.index(random_nodes[0])
+            index2 = path1.index(random_nodes[1])
+            child1_index = index1 - 1
+            child2_index = index2 - 1
+            if index1>index2:
+                child1 = path1[:child1_index]
+                return_list.extend(child1)
+                rand_path = get_random_path(grid_world, rand_idx1, rand_idx2, grid_world.graph)
+                return_list.extend(rand_path)
+                child2 = path1[child2_index:]
+                return_list.extend(child2)
+            if index2>index1:
+                child1 = path1[:child1_index]
+                return_list.extend(child1)
+                rand_path = get_random_path(grid_world, rand_idx1, rand_idx2, grid_world.graph)
+                return_list.extend(rand_path)
+                child2 = path1[child1_index:]
+                return_list.extend(child2)
+    print(len(return_list))
+    return return_list
 
 
 class Genetic(object):
@@ -80,7 +114,6 @@ grid_world.create_grid_ui(grid_world.m, grid_world.n, (grid_world.start_x, grid_
 
 # Population paths list
 path = Genetic().run(grid_world)
-# print(path)
 first_list = []
 second_list = []
 while path:
@@ -93,22 +126,24 @@ while path:
     path.pop(0)
     count = count + 1
 
-crossover(first_list, second_list)
+crossover_list=crossover(first_list, second_list)
+mutation_list=mutation(crossover_list)
 
-for i in first_list:
-    i_count = len(i)
-    j_count = 0
-    rand_idx = random.sample(i, 1)
-    for j in second_list:
-        while j_count < len(j):
-            for k in j:
-                if tuple(rand_idx) == k:
-                    print(rand_idx)
-                    break
-                j_count = j_count + 1
-        if j_count > len(j):
-            rand_idx = random.sample(i, 1)
-            j_count = 0
+
+# for i in first_list:
+#     i_count = len(i)
+#     j_count = 0
+#     rand_idx = random.sample(i, 1)
+#     for j in second_list:
+#         while j_count < len(j):
+#             for k in j:
+#                 if tuple(rand_idx) == k:
+#                     print(rand_idx)
+#                     break
+#                 j_count = j_count + 1
+#         if j_count > len(j):
+#             rand_idx = random.sample(i, 1)
+#             j_count = 0
 
     # for j in second_list:
     #     j_count=0

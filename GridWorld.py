@@ -24,8 +24,8 @@ class GridWorld:
         self.padding = 30
         self.current_estimates = []
 
-        self.m = 15
-        self.n = 15
+        self.m = 5
+        self.n = 5
         self.is_visited = [[0] * self.m for temp in range(self.n)]
 
         self.start_x = 0
