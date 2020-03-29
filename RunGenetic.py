@@ -79,6 +79,72 @@ def get_random_path(grid_world, start_node, end_node, graph):
     return inner_final_route
 
 
+def crossover(list1, list2):
+    return_list = []
+    for i in range(min(len(list1), len(list2))):
+        path1 = list1[i]
+        path2 = list2[i]
+        common_nodes = []
+        for node in path1:
+            if node in path2:
+                common_nodes.append(node)
+        if len(common_nodes) > 0:
+            random_common_node = random.choice(common_nodes)
+            index1 = path1.index(random_common_node)
+            index2 = path2.index(random_common_node)
+            child1 = path1[:index1]
+            child1.extend(path2[index2:])
+            child2 = path2[:index2]
+            child2.extend(path1[index1:])
+            return_list.append(child1)
+            return_list.append(child2)
+    return_list.extend(list1)
+    return_list.extend(list2)
+    print(len(list1))
+    print(len(list2))
+    print(len(return_list))
+    return return_list
+
+
+def mutation(crossover_list):
+    mutated_list=[]
+    for i in range(len(crossover_list)):
+        return_list = []
+        path1 = crossover_list[i]
+        random_nodes = []
+        # rand_idx1 = (4,4)
+        # rand_idx2 = (4,4)
+
+        random_nodes = random.sample(path1, 2)
+        print(random_nodes)
+        # rand_idx1 = random.choice(path1)
+        # rand_idx2 = random.choice(path1)
+        # if rand_idx2 == rand_idx1:
+        #     rand_idx2 = random.choice(path1)
+        # random_nodes.append(rand_idx1)
+        # random_nodes.append(rand_idx2)
+        if len(random_nodes) > 0:
+            index1 = path1.index(random_nodes[0])
+            index2 = path1.index(random_nodes[1])
+            if index1<index2:
+                child1 = path1[:index1]
+                rand_path = get_random_path(grid_world,random_nodes[1], random_nodes[0], grid_world.graph)
+                child1.extend(rand_path)
+                child2 = path1[index2:]
+                child1.extend(child2)
+                return_list.extend(child1)
+            if index1>index2:
+                child1 = path1[:index2]
+                rand_path = get_random_path(grid_world, random_nodes[0], random_nodes[1], grid_world.graph)
+                child1.extend(rand_path)
+                child2 = path1[index1:]
+                child1.extend(child2)
+                return_list.extend(child1)
+        mutated_list.append(return_list)
+    print(len(mutated_list))
+    return mutated_list
+
+
 class Genetic(object):
     def __init__(self):
         self.m = 5
@@ -125,6 +191,24 @@ first_list, second_list = split_population(paths)
 num_of_iterations = 100
 starting_population_count = 20
 
+crossover_list=crossover(first_list, second_list)
+mutation_list=mutation(crossover_list)
+
+
+# for i in first_list:
+#     i_count = len(i)
+#     j_count = 0
+#     rand_idx = random.sample(i, 1)
+#     for j in second_list:
+#         while j_count < len(j):
+#             for k in j:
+#                 if tuple(rand_idx) == k:
+#                     print(rand_idx)
+#                     break
+#                 j_count = j_count + 1
+#         if j_count > len(j):
+#             rand_idx = random.sample(i, 1)
+#             j_count = 0
 best_path = []
 best_score = float('inf')
 for i in range(num_of_iterations):
