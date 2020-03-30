@@ -3,7 +3,7 @@ import Functions
 from GridWorld import GridWorld
 
 
-
+#function to evaluate by finding the length of the paths
 def evaluate_score(path):
     return len(path)
 
@@ -48,9 +48,6 @@ def crossover(list1, list2):
             return_list.append(child2)
     return_list.extend(list1)
     return_list.extend(list2)
-    # print(len(list1))
-    # print(len(list2))
-    # print(len(return_list))
     return return_list
 
 
@@ -111,18 +108,9 @@ def mutation(crossover_list):
     for i in range(len(crossover_list)):
         return_list = []
         path1 = crossover_list[i]
-        random_nodes = []
-        # rand_idx1 = (4,4)
-        # rand_idx2 = (4,4)
-
+       # random_nodes = []
         random_nodes = random.sample(path1, 2)
         print(random_nodes)
-        # rand_idx1 = random.choice(path1)
-        # rand_idx2 = random.choice(path1)
-        # if rand_idx2 == rand_idx1:
-        #     rand_idx2 = random.choice(path1)
-        # random_nodes.append(rand_idx1)
-        # random_nodes.append(rand_idx2)
         if len(random_nodes) > 0:
             index1 = path1.index(random_nodes[0])
             index2 = path1.index(random_nodes[1])
@@ -185,7 +173,6 @@ grid_world.create_grid_ui(grid_world.m, grid_world.n, (grid_world.start_x, grid_
 
 # Population paths list
 paths = Genetic().run(grid_world)
-# print(path)
 first_list, second_list = split_population(paths)
 
 num_of_iterations = 100
@@ -194,21 +181,6 @@ starting_population_count = 20
 crossover_list=crossover(first_list, second_list)
 mutation_list=mutation(crossover_list)
 
-
-# for i in first_list:
-#     i_count = len(i)
-#     j_count = 0
-#     rand_idx = random.sample(i, 1)
-#     for j in second_list:
-#         while j_count < len(j):
-#             for k in j:
-#                 if tuple(rand_idx) == k:
-#                     print(rand_idx)
-#                     break
-#                 j_count = j_count + 1
-#         if j_count > len(j):
-#             rand_idx = random.sample(i, 1)
-#             j_count = 0
 best_path = []
 best_score = float('inf')
 for i in range(num_of_iterations):
@@ -226,6 +198,21 @@ for i in range(num_of_iterations):
 
     print('Genetic:', best_score, best_path[0], best_path[-1])
 
+
+# for i in first_list:
+#     i_count = len(i)
+#     j_count = 0
+#     rand_idx = random.sample(i, 1)
+#     for j in second_list:
+#         while j_count < len(j):
+#             for k in j:
+#                 if tuple(rand_idx) == k:
+#                     print(rand_idx)
+#                     break
+#                 j_count = j_count + 1
+#         if j_count > len(j):
+#             rand_idx = random.sample(i, 1)
+#             j_count = 0
 # for i in first_list:
 #     i_count = len(i)
 #     j_count = 0
