@@ -59,11 +59,12 @@ def run_a_star(grid_world):
     path = a_star(grid_world)
     if path is not None:
         grid_world.a_star_final_route = path
+        print(len(grid_world.a_star_final_route))
 
 
 grid_world = GridWorld()
-Functions.create_random_obstacles(grid_world, 0.05)
-Functions.create_fixed_obstacles(grid_world, 6)
+Functions.create_random_obstacles(grid_world, 0.205)
+# Functions.create_fixed_obstacles(grid_world, 6)
 grid_world.scan_grid_and_generate_graph()
 grid_world.print_graph()
 grid_world.create_grid_ui(grid_world.m, grid_world.n, (grid_world.start_x, grid_world.start_y),

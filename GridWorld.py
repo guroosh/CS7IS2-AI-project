@@ -18,14 +18,15 @@ class GridWorld:
         self.agent_padding = 0
         self.dfs_route = []
         self.dfs_best_route = []
+        self.route = []
         self.final_route_genetic = []
         self.a_star_route = []
         self.a_star_final_route = []
         self.padding = 30
         self.current_estimates = []
 
-        self.m = 5
-        self.n = 5
+        self.m = 40
+        self.n = 40
         self.is_visited = [[0] * self.m for temp in range(self.n)]
 
         self.start_x = 0
@@ -323,6 +324,18 @@ class GridWorld:
                                             j * length + self.padding + length, fill=r[1])
             self.update_agent_ui(self.agent)
         for r in self.a_star_final_route:
+            time.sleep(0.01)
+            i = r[0]
+            j = r[1]
+            if not (i == self.start_x and j == self.start_y) and not (i == self.end_x and j == self.end_y):
+                self.frame.create_rectangle(i * length + self.padding, j * length + self.padding,
+                                            i * length + self.padding + length,
+                                            j * length + self.padding + length, fill=self.color_final_path)
+            self.frame.update()
+
+    def move_on_given_route_genetic(self):
+        length = self.length
+        for r in self.final_route_genetic:
             time.sleep(0.01)
             i = r[0]
             j = r[1]
