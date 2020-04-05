@@ -52,8 +52,8 @@ def run_dfs(grid_world):
 
 
 grid_world = GridWorld()
-Functions.create_random_obstacles(grid_world, 0.05)
-Functions.create_fixed_obstacles(grid_world, 6)
+Functions.create_random_obstacles(grid_world, 0.205)
+# Functions.create_fixed_obstacles(grid_world, 6)
 grid_world.scan_grid_and_generate_graph()
 grid_world.print_graph()
 grid_world.create_grid_ui(grid_world.m, grid_world.n, (grid_world.start_x, grid_world.start_y),
