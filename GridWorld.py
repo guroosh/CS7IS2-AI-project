@@ -9,8 +9,8 @@ from Graph import Graph
 class GridWorld:
 
     def __init__(self):
-        self.height = 350
-        self.width = 350
+        self.height = 700
+        self.width = 700
         self.agent = ()
         self.agent_ui = ()
         self.length = 0
@@ -359,3 +359,18 @@ class GridWorld:
                                             i * length + self.padding + length,
                                             j * length + self.padding + length, fill='orange')
             self.frame.update()
+
+    def save_graph(self):
+        graph_code = ""
+        for i in range(self.m):
+            for j in range(self.n):
+                if (i, j) in self.obstacles:
+                    # print(i, j, 1, end='\t')
+                    graph_code += '1'
+                else:
+                    # print(i, j, 0, end='\t')
+                    graph_code += '0'
+            # print()
+        # print(graph_code)
+        print(hex(int(graph_code, 2)))
+        return hex(int(graph_code, 2))
