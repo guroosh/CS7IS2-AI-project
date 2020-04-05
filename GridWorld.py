@@ -9,8 +9,8 @@ from Graph import Graph
 class GridWorld:
 
     def __init__(self):
-        self.height = 700
-        self.width = 700
+        self.height = 350
+        self.width = 350
         self.agent = ()
         self.agent_ui = ()
         self.length = 0
@@ -22,6 +22,8 @@ class GridWorld:
         self.final_route_genetic = []
         self.a_star_route = []
         self.a_star_final_route = []
+        self.aco_current_route = []
+        self.aco_best_route = []
         self.padding = 30
         self.current_estimates = []
 
@@ -343,4 +345,17 @@ class GridWorld:
                 self.frame.create_rectangle(i * length + self.padding, j * length + self.padding,
                                             i * length + self.padding + length,
                                             j * length + self.padding + length, fill=self.color_final_path)
+            self.frame.update()
+
+    def move_on_given_route_aco(self):
+        length = self.length
+        color_random = random.choice(self.COLORS)
+        for r in self.aco_best_route:
+            time.sleep(0.01)
+            i = r[0]
+            j = r[1]
+            if not (i == self.start_x and j == self.start_y) and not (i == self.end_x and j == self.end_y):
+                self.frame.create_rectangle(i * length + self.padding, j * length + self.padding,
+                                            i * length + self.padding + length,
+                                            j * length + self.padding + length, fill='orange')
             self.frame.update()

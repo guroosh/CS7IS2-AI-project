@@ -101,7 +101,7 @@ def remove_duplicates(path):
     return ret_path
 
 
-def mutation(grid_world, population):
+def mutation2(grid_world, population):
     mutated_list = []
     for i in range(len(population)):
         mutated_path = []
@@ -133,7 +133,7 @@ def mutation(grid_world, population):
     return mutated_list
 
 
-def mutation2(grid_world, population):
+def mutation(grid_world, population):
     count = len(population)
     mutation_count = 0.3 * count
     sample = random.sample(population, int(mutation_count))
