@@ -27,19 +27,19 @@ class GridWorld:
         self.padding = 30
         self.current_estimates = []
 
-        self.m = 40
-        self.n = 40
+        self.m = 20
+        self.n = 20
         self.is_visited = [[0] * self.m for temp in range(self.n)]
 
-        self.start_x = 0
-        self.start_y = 0
-        self.end_x = self.m - 1
-        self.end_y = self.n - 1
+        # self.start_x = 0
+        # self.start_y = 0
+        # self.end_x = self.m - 1
+        # self.end_y = self.n - 1
 
-        # self.start_x = random.randint(0, self.m - 1)
-        # self.start_y = random.randint(0, self.n - 1)
-        # self.end_x = random.randint(0, self.m - 1)
-        # self.end_y = random.randint(0, self.n - 1)
+        self.start_x = random.randint(0, self.m - 1)
+        self.start_y = random.randint(0, self.n - 1)
+        self.end_x = random.randint(0, self.m - 1)
+        self.end_y = random.randint(0, self.n - 1)
 
         self.start_key = str(self.start_x) + "," + str(self.start_y)
         self.graph = Graph(self.start_key)
@@ -374,3 +374,58 @@ class GridWorld:
         # print(graph_code)
         print(hex(int(graph_code, 2)))
         return hex(int(graph_code, 2))
+
+    def step(self, action):
+        self.render()
+        previous_state = (self.agent[0], self.agent[1])
+        directions = ['east', 'west', 'north', 'south']
+        move = directions[action]
+        if move == 'east':
+            if self.possible_moves[self.agent[0]][self.agent[1]][0]:
+                self.agent = (self.agent[0] + 1, self.agent[1])
+                self.update_agent_ui(self.agent)
+        if move == 'west':
+            if self.possible_moves[self.agent[0]][self.agent[1]][1]:
+                self.agent = (self.agent[0] - 1, self.agent[1])
+                self.update_agent_ui(self.agent)
+        if move == 'north':
+            if self.possible_moves[self.agent[0]][self.agent[1]][2]:
+                self.agent = (self.agent[0], self.agent[1] - 1)
+                self.update_agent_ui(self.agent)
+        if move == 'south':
+            if self.possible_moves[self.agent[0]][self.agent[1]][3]:
+                self.agent = (self.agent[0], self.agent[1] + 1)
+                self.update_agent_ui(self.agent)
+
+        self.frame.tag_raise(self.agent)
+        current_state = (self.agent[0], self.agent[1])
+
+        # reward function
+        if current_state == (self.end_x, self.end_y):
+            reward = 100
+            done = True
+        elif current_state in self.obstacles:
+            reward = -100
+            done = True
+        else:
+            reward = self.get_reverse_heuristics(current_state[0], current_state[1]) - \
+                self.get_reverse_heuristics(previous_state[0], previous_state[1])
+            # reward = -1
+            done = False
+
+        return current_state, reward, done
+
+    def reset(self):
+        self.frame.update()
+        time.sleep(0.5)
+
+        self.update_agent_ui((self.start_x, self.start_y))
+
+        self.render()
+
+        state = (self.agent[0], self.agent[1])
+        return state
+
+    def render(self):
+        time.sleep(0.01)
+        self.frame.update()

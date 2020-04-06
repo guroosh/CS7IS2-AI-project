@@ -13,7 +13,7 @@ class GridWorld:
         self.width = 700
         self.agent = ()
         self.agent_ui = ()
-		
+
         self.length = 0
         self.possible_moves = ()
         self.agent_padding = 0
@@ -29,7 +29,7 @@ class GridWorld:
         self.m = 15
         self.n = 15
         self.is_visited = [[0] * self.m for temp in range(self.n)]
-        #DEEP SARSA MEMBERS
+        # DEEP SARSA MEMBERS
         self.start_x = 0
         self.start_y = 0
         self.target_end = 14
@@ -37,14 +37,14 @@ class GridWorld:
         self.end_y = self.n - 1
         self.action_space = ['u', 'd', 'l', 'r']
         self.action_size = len(self.action_space)
-        self.counter=0
+        self.counter = 0
         self.rewards = []
         self.goal = []
-	    
-        #Q-learning
+
+        # Q-learning
         self.action_space = ['u', 'd', 'l', 'r']
         self.n_actions = len(self.action_space)
-        
+
         # self.start_x = random.randint(0, self.m - 1)
         # self.start_y = random.randint(0, self.n - 1)
         # self.end_x = random.randint(0, self.m - 1)
@@ -142,10 +142,8 @@ class GridWorld:
                        'gray84', 'gray85', 'gray86', 'gray87', 'gray88', 'gray89', 'gray90', 'gray91', 'gray92',
                        'gray93', 'gray94', 'gray95', 'gray97', 'gray98', 'gray99']
         self.frame = tk.Canvas(bg=self.color_background, height=self.height, width=self.height)
-        self.set_reward([self.target_end,self.target_end], 1)
+        self.set_reward([self.target_end, self.target_end], 1)
         self.frame.pack()
-		
-
 
     def create_grid_ui(self, m, n, start, end, obstacles):
         l1 = (self.width - (2 * self.padding)) / m
@@ -358,17 +356,16 @@ class GridWorld:
                                             i * length + self.padding + length,
                                             j * length + self.padding + length, fill=self.color_final_path)
             self.frame.update()
-	 #DEEP-SARSA FUNCTIONS
-     
-    #OBSTACLE REWARD SETTING TO -1		
+        # DEEP-SARSA FUNCTIONS
+
+    # OBSTACLE REWARD SETTING TO -1
     def set_obstacle_reward(self):
         for i in range(self.m):
             for j in range(self.n):
                 if (i, j) in self.obstacles:
                     self.set_reward([i, j], -1)
 
-
-    #SET REWARD OF FINAL PATH TO 1 AND OBSTACLE TO -1					
+    # SET REWARD OF FINAL PATH TO 1 AND OBSTACLE TO -1
     def set_reward(self, state, reward):
         state = [int(state[0]), int(state[1])]
         x = int(state[0])
@@ -377,24 +374,22 @@ class GridWorld:
         if reward > 0:
             temp['reward'] = reward
 
-
-
         elif reward < 0:
             temp['direction'] = -1
             temp['reward'] = reward
 
         temp['state'] = state
         self.rewards.append(temp)
-    
-    #RESET THE STATES TO ZERO 
+
+    # RESET THE STATES TO ZERO
     def reset(self):
-        self.agent = (0,0)
+        self.agent = (0, 0)
         # return observation
         self.reset_reward()
-        action=0
+        action = 0
         return self.get_state(action)
-    
-    #RESET THE REWARDS AND CLEAR THEM
+
+    # RESET THE REWARDS AND CLEAR THEM
     def reset_reward(self):
 
         self.rewards.clear()
@@ -404,9 +399,8 @@ class GridWorld:
         # #goal
         self.set_reward([self.target_end, self.target_end], 1)
 
-
-    #GET THE NEXT STTE OF AGENT
-    def get_state(self,action):
+    # GET THE NEXT STTE OF AGENT
+    def get_state(self, action):
 
         location = self.agent
         agent_x = location[0]
@@ -429,7 +423,7 @@ class GridWorld:
 
         return states
 
-    #CHECK IF TARGERT IS REACHED
+    # CHECK IF TARGERT IS REACHED
     def check_if_reward(self, state):
         check_list = dict()
         check_list['if_goal'] = False
@@ -441,18 +435,23 @@ class GridWorld:
                 if reward['reward'] == 1:
                     check_list['if_goal'] = True
 
+        print("####", state)
+        if state in self.obstacles:
+            print(check_list['if_goal'])
+            check_list['if_goal'] = True
+
         check_list['rewards'] = rewards
         return check_list
-    
-    #STEP THE AGENT BY EACH ACTION PRODUCED FROM DEEP-SARSA FUNCTION
-    def step(self ,action):
+
+    # STEP THE AGENT BY EACH ACTION PRODUCED FROM DEEP-SARSA FUNCTION
+    def step(self, action):
         self.counter += 1
         self.render()
 
-        #if self.counter % 2 == 1:
-            #self.rewards = self.move_rewards()
+        # if self.counter % 2 == 1:
+        # self.rewards = self.move_rewards()
 
-        next_coords = self.move(self.agent,self.obstacles,action)
+        next_coords = self.move(self.agent, self.obstacles, action)
         check = self.check_if_reward((next_coords))
         done = check['if_goal']
         reward = check['rewards']
@@ -461,53 +460,52 @@ class GridWorld:
 
         return s_, reward, done
 
-    #MOVE THE AGENT IN THE ENVIRONEMNT AND UPDATE IT'S POSTION
-    def move(self,agent,obstacles, action):
-    
+    # MOVE THE AGENT IN THE ENVIRONEMNT AND UPDATE IT'S POSTION
+    def move(self, agent, obstacles, action):
+
         if action == 0:  # up
             if self.agent[1] > 0:
-                self.agent = (self.agent[0], self.agent[1]-1)
+                self.agent = (self.agent[0], self.agent[1] - 1)
                 if self.agent not in self.obstacles:
                     self.update_agent_ui(self.agent)
-                #else:
-                    #To-do somethng here
-                    #self.reset()
-                    #self.agent = (self.agent[0], self.agent[1]+1)
+                # else:
+                # To-do somethng here
+                # self.reset()
+                # self.agent = (self.agent[0], self.agent[1]+1)
 
         elif action == 1:  # down
             if self.agent[1] < self.target_end:
-                self.agent = (self.agent[0], self.agent[1]+1)
+                self.agent = (self.agent[0], self.agent[1] + 1)
                 if self.agent not in self.obstacles:
                     self.update_agent_ui(self.agent)
-                #else:
-                    #self.update_agent_ui(self.agent)
-                    #self.reset()
-                    #self.agent = (self.agent[0], self.agent[1]-1)
+                # else:
+                # self.update_agent_ui(self.agent)
+                # self.reset()
+                # self.agent = (self.agent[0], self.agent[1]-1)
         elif action == 2:  # right
             if self.agent[0] < self.target_end:
-                self.agent = (self.agent[0]+1, self.agent[1])
+                self.agent = (self.agent[0] + 1, self.agent[1])
                 if self.agent not in self.obstacles:
                     self.update_agent_ui(self.agent)
-                #else:
-                    #self.update_agent_ui(self.agent)
-                    #self.reset()
-                    #self.agent = (self.agent[0]-1, self.agent[1])
+                # else:
+                # self.update_agent_ui(self.agent)
+                # self.reset()
+                # self.agent = (self.agent[0]-1, self.agent[1])
         elif action == 3:  # left
             if self.agent[0] > 0:
-                self.agent = (self.agent[0]-1, self.agent[1])
+                self.agent = (self.agent[0] - 1, self.agent[1])
                 if self.agent not in self.obstacles:
                     self.update_agent_ui(self.agent)
-                #else:
-                    #self.update_agent_ui(self.agent)
-                    #self.reset()
-                    #self.agent = (self.agent[0]+1, self.agent[1])
+                # else:
+                # self.update_agent_ui(self.agent)
+                # self.reset()
+                # self.agent = (self.agent[0]+1, self.agent[1])
 
         s_ = self.agent
-
         return s_
-    
-    #refresh the agent move by this time 
+
+    # refresh the agent move by this time
     def render(self):
-        #decrease the number to make the agent move faster
+        # decrease the number to make the agent move faster
         time.sleep(0.05)
-        #self.update()
+        # self.update()
