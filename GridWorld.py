@@ -380,22 +380,28 @@ class GridWorld:
         previous_state = (self.agent[0], self.agent[1])
         directions = ['east', 'west', 'north', 'south']
         move = directions[action]
+        print(action, move)
+        is_move_possible = False
         if move == 'east':
             if self.possible_moves[self.agent[0]][self.agent[1]][0]:
-                self.agent = (self.agent[0] + 1, self.agent[1])
-                self.update_agent_ui(self.agent)
+                is_move_possible = True
+            self.agent = (self.agent[0] + 1, self.agent[1])
+            self.update_agent_ui(self.agent)
         if move == 'west':
             if self.possible_moves[self.agent[0]][self.agent[1]][1]:
-                self.agent = (self.agent[0] - 1, self.agent[1])
-                self.update_agent_ui(self.agent)
+                is_move_possible = True
+            self.agent = (self.agent[0] - 1, self.agent[1])
+            self.update_agent_ui(self.agent)
         if move == 'north':
             if self.possible_moves[self.agent[0]][self.agent[1]][2]:
-                self.agent = (self.agent[0], self.agent[1] - 1)
-                self.update_agent_ui(self.agent)
+                is_move_possible = True
+            self.agent = (self.agent[0], self.agent[1] - 1)
+            self.update_agent_ui(self.agent)
         if move == 'south':
             if self.possible_moves[self.agent[0]][self.agent[1]][3]:
-                self.agent = (self.agent[0], self.agent[1] + 1)
-                self.update_agent_ui(self.agent)
+                is_move_possible = True
+            self.agent = (self.agent[0], self.agent[1] + 1)
+            self.update_agent_ui(self.agent)
 
         self.frame.tag_raise(self.agent)
         current_state = (self.agent[0], self.agent[1])
@@ -407,11 +413,18 @@ class GridWorld:
         elif current_state in self.obstacles:
             reward = -100
             done = True
+        elif not is_move_possible:
+            reward = -100
+            done = True
         else:
-            reward = self.get_reverse_heuristics(current_state[0], current_state[1]) - \
-                self.get_reverse_heuristics(previous_state[0], previous_state[1])
-            # reward = -1
+            old_distance = self.get_reverse_heuristics(previous_state[0], previous_state[1])
+            new_distance = self.get_reverse_heuristics(current_state[0], current_state[1])
+            reward = 0  # new_distance - old_distance
             done = False
+            # if self.is_visited[current_state[0]][current_state[1]] > 0:
+            #     reward += -self.is_visited[current_state[0]][current_state[1]]
+            #     done = True
+            # reward = -1
 
         return current_state, reward, done
 
