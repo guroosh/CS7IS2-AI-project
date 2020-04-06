@@ -7,7 +7,7 @@ from matplotlib import pylab
 from pylab import *
 
 
-EPISODES = 1000
+EPISODES = 200
 class Agent:
     def __init__(self,actions):
         self.alpha = 0.1 
@@ -32,7 +32,7 @@ class Agent:
         else :
              next_action = np.random.choice(self.actions)
         if self.epsilon > 0 :
-            self.epsilon -= 0.00001 #Décrementer espsilon pour Arreter l'exploration aléatoire qu'on aura un politique optimale
+            self.epsilon -= 0.00001 
         if self.epsilon < 0 :
             self.epsilon = 0
         return next_action
@@ -92,8 +92,7 @@ if __name__ == "__main__":
             #state = next_state
             # every time step we do training
             score += reward
-            print(e)
-            print(score)
+            
             #state = copy.deepcopy(next_state)
 
             if done:
@@ -104,6 +103,4 @@ if __name__ == "__main__":
                 print("episode:", e, "  score:", score, "global_step",
                       global_step, "  epsilon:", agent.epsilon)
 
-        #if e % 100 == 0:
-            #agent.model.save_weights("./save_model/deep_sarsa.h5")
-           # break
+        
