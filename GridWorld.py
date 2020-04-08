@@ -8,7 +8,7 @@ from Graph import Graph
 
 class GridWorld:
 
-    def __init__(self):
+    def __init__(self, m, n):
         self.height = 700
         self.width = 700
         self.agent = ()
@@ -27,19 +27,19 @@ class GridWorld:
         self.padding = 30
         self.current_estimates = []
 
-        self.m = 20
-        self.n = 20
+        self.m = m
+        self.n = n
         self.is_visited = [[0] * self.m for temp in range(self.n)]
 
-        # self.start_x = 0
-        # self.start_y = 0
-        # self.end_x = self.m - 1
-        # self.end_y = self.n - 1
-
-        self.start_x = random.randint(0, self.m - 1)
-        self.start_y = random.randint(0, self.n - 1)
-        self.end_x = random.randint(0, self.m - 1)
-        self.end_y = random.randint(0, self.n - 1)
+        self.start_x = 0
+        self.start_y = 0
+        self.end_x = self.m - 1
+        self.end_y = self.n - 1
+        #
+        # self.start_x = random.randint(0, self.m - 1)
+        # self.start_y = random.randint(0, self.n - 1)
+        # self.end_x = random.randint(0, self.m - 1)
+        # self.end_y = random.randint(0, self.n - 1)
 
         self.start_key = str(self.start_x) + "," + str(self.start_y)
         self.graph = Graph(self.start_key)
@@ -380,28 +380,27 @@ class GridWorld:
         previous_state = (self.agent[0], self.agent[1])
         directions = ['east', 'west', 'north', 'south']
         move = directions[action]
-        print(action, move)
         is_move_possible = False
         if move == 'east':
             if self.possible_moves[self.agent[0]][self.agent[1]][0]:
+                self.agent = (self.agent[0] + 1, self.agent[1])
+                self.update_agent_ui(self.agent)
                 is_move_possible = True
-            self.agent = (self.agent[0] + 1, self.agent[1])
-            self.update_agent_ui(self.agent)
         if move == 'west':
             if self.possible_moves[self.agent[0]][self.agent[1]][1]:
+                self.agent = (self.agent[0] - 1, self.agent[1])
+                self.update_agent_ui(self.agent)
                 is_move_possible = True
-            self.agent = (self.agent[0] - 1, self.agent[1])
-            self.update_agent_ui(self.agent)
         if move == 'north':
             if self.possible_moves[self.agent[0]][self.agent[1]][2]:
+                self.agent = (self.agent[0], self.agent[1] - 1)
+                self.update_agent_ui(self.agent)
                 is_move_possible = True
-            self.agent = (self.agent[0], self.agent[1] - 1)
-            self.update_agent_ui(self.agent)
         if move == 'south':
             if self.possible_moves[self.agent[0]][self.agent[1]][3]:
+                self.agent = (self.agent[0], self.agent[1] + 1)
+                self.update_agent_ui(self.agent)
                 is_move_possible = True
-            self.agent = (self.agent[0], self.agent[1] + 1)
-            self.update_agent_ui(self.agent)
 
         self.frame.tag_raise(self.agent)
         current_state = (self.agent[0], self.agent[1])
@@ -415,15 +414,15 @@ class GridWorld:
             done = True
         elif not is_move_possible:
             reward = -100
-            done = True
+            done = False
         else:
             old_distance = self.get_reverse_heuristics(previous_state[0], previous_state[1])
             new_distance = self.get_reverse_heuristics(current_state[0], current_state[1])
             reward = 0  # new_distance - old_distance
             done = False
-            # if self.is_visited[current_state[0]][current_state[1]] > 0:
-            #     reward += -self.is_visited[current_state[0]][current_state[1]]
-            #     done = True
+            if self.is_visited[current_state[0]][current_state[1]] > 0:
+                reward = -self.is_visited[current_state[0]][current_state[1]]
+                # done = True
             # reward = -1
 
         return current_state, reward, done
@@ -440,5 +439,5 @@ class GridWorld:
         return state
 
     def render(self):
-        time.sleep(0.01)
+        time.sleep(0.05)
         self.frame.update()

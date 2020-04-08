@@ -5,7 +5,7 @@ from QLearning import QLearning
 if __name__ == "__main__":
     grid_world = GridWorld()
     # Functions.create_grid_from_hex(grid_world)
-    Functions.create_random_obstacles(grid_world, 0.305)
+    Functions.create_random_obstacles(grid_world, 0.105)
     grid_world.scan_grid_and_generate_graph()
     grid_world.print_graph()
     grid_world.create_grid_ui(grid_world.m, grid_world.n, (grid_world.start_x, grid_world.start_y),
@@ -24,9 +24,10 @@ if __name__ == "__main__":
             next_state, reward, done = grid_world.step(action)
 
             QL.learn(str(state), action, reward, str(next_state))
-            print("<state:{0} , action:{1} , reward:{2} , next_state:{3}>".format(
-                str(state), str(action), str(reward), str(next_state)))
-            # grid_world.is_visited[state[0]][state[1]] += 1
+            if reward != 0:
+                print("<state:{0} , action:{1} , reward:{2} , next_state:{3}>".format(
+                    str(state), str(action), str(reward), str(next_state)))
+            grid_world.is_visited[state[0]][state[1]] += 1
             state = next_state
 
             if done:
