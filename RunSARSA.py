@@ -1,17 +1,17 @@
 import Functions
 from GridWorld import GridWorld
-from QLearning import QLearning
+from sarsa_agent import SARSAgent
 
 if __name__ == "__main__":
     grid_world = GridWorld(10,10)
     # Functions.create_grid_from_hex(grid_world)
-    Functions.create_random_obstacles(grid_world, 0.105)
+    Functions.create_random_obstacles(grid_world, 0.305)
     grid_world.scan_grid_and_generate_graph()
     grid_world.print_graph()
     grid_world.create_grid_ui(grid_world.m, grid_world.n, (grid_world.start_x, grid_world.start_y),
                               (grid_world.end_x, grid_world.end_y), grid_world.obstacles)
 
-    QL = QLearning(list(range(4)))
+    SA = SARSAgent(list(range(4)))
 
     number_of_episodes = 3000
     for episode in range(number_of_episodes):
@@ -20,16 +20,17 @@ if __name__ == "__main__":
         while True:
             grid_world.render()
 
-            action = QL.get_action(str(state))
+            action = SA.get_action(str(state))
             next_state, reward, done = grid_world.step(action)
+            next_action = SA.get_action(str(next_state))
 
-            QL.learn(str(state), action, reward, str(next_state))
-            if reward != 0:
-                print("<state:{0} , action:{1} , reward:{2} , next_state:{3}>".format(
-                    str(state), str(action), str(reward), str(next_state)))
-            grid_world.is_visited[state[0]][state[1]] += 1
+            SA.learn(str(state), action, reward, str(next_state),next_action)
+            print("<state:{0} , action:{1} , reward:{2} , next_state:{3}>".format(
+                str(state), str(action), str(reward), str(next_state)))
+            # grid_world.is_visited[state[0]][state[1]] += 1
             state = next_state
+            action = next_action
 
             if done:
                 break
-    print(QL.q_table)
+    print(SA.q_table)
