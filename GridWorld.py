@@ -353,17 +353,24 @@ class GridWorld:
                                             j * length + self.padding + length, fill=self.color_final_path)
             self.frame.update()
 
-    def move_on_given_route_aco(self):
+    def move_on_given_route_aco(self, color_alternate):
         length = self.length
-        color_random = random.choice(self.COLORS)
+        if color_alternate % 4 == 0:
+            color = 'orange'
+        elif color_alternate % 4 == 1:
+            color = 'blue'
+        elif color_alternate % 4 == 2:
+            color = 'red'
+        else:
+            color = 'purple'
         for r in self.aco_best_route:
-            time.sleep(0.01)
+            time.sleep(0.002)
             i = r[0]
             j = r[1]
             if not (i == self.start_x and j == self.start_y) and not (i == self.end_x and j == self.end_y):
                 self.frame.create_rectangle(i * length + self.padding, j * length + self.padding,
                                             i * length + self.padding + length,
-                                            j * length + self.padding + length, fill='orange')
+                                            j * length + self.padding + length, fill=color)
             self.frame.update()
 
     def save_graph(self):

@@ -17,35 +17,35 @@ def randomize_list(new_list, max_tau, min_tau, max_pheromone, min_pheromone):
     for t in new_list:
         pheromone = (1 + ((t[2] - min_pheromone) / (max_pheromone - min_pheromone)))
         # print(pheromone)
-        # tau = (1 + ((t[1] - min_tau) / (max_tau - min_tau))) * 100
+        tau = (1 + ((t[1] - min_tau) / (max_tau - min_tau))) * 100
         # print("tau, pheromone: ", pheromone)
-        den += (pheromone ** beta)
+        den += ((pheromone ** beta) * (tau ** alpha))
     prob_check = 0
     temp_list = []
     for t in new_list:
         pheromone = (1 + ((t[2] - min_pheromone) / (max_pheromone - min_pheromone)))
-        # tau = (1 + ((t[1] - min_tau) / (max_tau - min_tau))) * 100
-        prob = (pheromone ** beta) / den
+        tau = (1 + ((t[1] - min_tau) / (max_tau - min_tau))) * 100
+        prob = ((pheromone ** beta) * (tau ** alpha)) / den
         prob_check += prob
         temp_list.append((t[0], prob))
     ret_list = []
 
     '''testing code START'''
-    temp_list.sort(key=lambda v: v[1], reverse=True)
-    ret_list = temp_list[:]
+    # temp_list.sort(key=lambda v: v[1], reverse=True)
+    # ret_list = temp_list[:]
     '''END'''
 
-    # long_list_of_100_possibilities = random.choices(population=temp_list,
-    #                                                 weights=[i[1] for i in temp_list], k=10)
+    long_list_of_100_possibilities = random.choices(population=temp_list,
+                                                    weights=[i[1] for i in temp_list], k=10)
 
     '''These 2 for loops can be optimised, by using breaks'''
-    # for l2 in long_list_of_100_possibilities:
-    #     if l2 not in ret_list:
-    #         ret_list.append(l2)
-    # random.shuffle(temp_list)
-    # for t in temp_list:
-    #     if t not in ret_list:
-    #         ret_list.append(t)
+    for l2 in long_list_of_100_possibilities:
+        if l2 not in ret_list:
+            ret_list.append(l2)
+    random.shuffle(temp_list)
+    for t in temp_list:
+        if t not in ret_list:
+            ret_list.append(t)
 
     # print(min_pheromone, max_pheromone)
     # print(new_list)
@@ -95,13 +95,14 @@ def sort_by_probabilities(adjacent_nodes, grid_world):
     for n in adjacent_nodes:
         node = str(n[0]) + ',' + str(n[1])
         pheromone = pheromone_table[node]
-        if (grid_world.end_x, grid_world.end_y) in adjacent_nodes:
-            if (n[0], n[1]) == (grid_world.end_x, grid_world.end_y):
-                tau = 1
-            else:
-                tau = 1 / 2
-        else:
-            tau = 1 / grid_world.get_heuristics(n[0], n[1])
+        # if (grid_world.end_x, grid_world.end_y) in adjacent_nodes:
+        #     if (n[0], n[1]) == (grid_world.end_x, grid_world.end_y):
+        #         tau = 1
+        #     else:
+        #         tau = 1 / 2
+        # else:
+        #     tau = 1 / grid_world.get_heuristics(n[0], n[1])
+        tau = grid_world.get_reverse_heuristics(n[0], n[1])
         # tau = 1
         max_tau = max(max_tau, tau)
         max_pheromone = max(max_pheromone, pheromone)
@@ -109,10 +110,10 @@ def sort_by_probabilities(adjacent_nodes, grid_world):
         min_pheromone = min(min_pheromone, pheromone)
         new_list.append((n, tau, pheromone))
 
-    random.shuffle(new_list)
+    # random.shuffle(new_list)
     # print(new_list)
     new_list = randomize_list(new_list, max_tau, min_tau, max_pheromone, min_pheromone)
-    new_list = randomize_again(new_list)
+    # new_list = randomize_again(new_list)
     # print(new_list)
     # print()
     return new_list
@@ -143,7 +144,7 @@ def update_pheromone(paths):
     for p in paths:
         current_len = len(p)
         for node in p:
-            pheromone_table[str(node[0]) + ',' + str(node[1])] += (1 / current_len)
+            pheromone_table[str(node[0]) + ',' + str(node[1])] += (1 / current_len) + 100
 
 
 def p_table_print():
@@ -188,32 +189,30 @@ def remove_redundancy(route):
 
 def run_aco(grid_world):
     best_path = []
-    for i in range(20):
+    for i in range(30):
         all_paths = []
-        for j in range(30):
+        for j in range(20):
             iterate_ants(grid_world, grid_world.start_key)
             grid_world.aco_current_route.append((grid_world.start_x, grid_world.start_y))
             grid_world.aco_current_route = grid_world.aco_current_route[::-1]
             grid_world.aco_current_route = grid_world.aco_current_route[:-1]
-            grid_world.aco_current_route = remove_redundancy(grid_world.aco_current_route)
             all_paths.append(grid_world.aco_current_route)
             grid_world.aco_current_route = []
             grid_world.is_visited = [[0] * grid_world.n for temp in range(grid_world.m)]
-        evaporation()
         current_best_path = get_current_best_path(all_paths)
         update_pheromone(all_paths)
-        # print_pheromone_table()
+        evaporation()
         best_path = get_best_path(best_path, current_best_path)
         print(i, len(best_path), len(current_best_path))
         if len(best_path) == 0:
             return
-    grid_world.aco_best_route = best_path
+        grid_world.aco_best_route = best_path
 
 
 grid_world = GridWorld(40, 40)
 # Functions.create_grid_from_hex(grid_world)
-Functions.create_random_obstacles(grid_world, 0.305)
-# Functions.create_fixed_obstacles(grid_world, 6)
+Functions.create_random_obstacles(grid_world, 0.005)
+Functions.create_fixed_obstacles(grid_world, 6)
 grid_world.scan_grid_and_generate_graph()
 grid_world.print_graph()
 grid_world.save_graph()
@@ -221,16 +220,17 @@ grid_world.save_graph()
 pheromone_table = dict()
 init_pheromone(grid_world)
 
-alpha = 1
-beta = 1
+alpha = 2
+beta = 5
 
 run_aco(grid_world)
 
-grid_world.create_grid_ui(grid_world.m, grid_world.n, (grid_world.start_x, grid_world.start_y),
-                          (grid_world.end_x, grid_world.end_y), grid_world.obstacles)
 print(grid_world.aco_best_route)
 
-# print_pheromone_table()
+grid_world.create_grid_ui(grid_world.m, grid_world.n, (grid_world.start_x, grid_world.start_y),
+                          (grid_world.end_x, grid_world.end_y), grid_world.obstacles)
 
-grid_world.move_on_given_route_aco()
+grid_world.move_on_given_route_aco(0)
+
+# print_pheromone_table()
 tk.mainloop()
