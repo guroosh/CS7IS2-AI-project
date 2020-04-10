@@ -188,7 +188,7 @@ def remove_redundancy(route):
 
 def run_aco(grid_world):
     best_path = []
-    for i in range(10):
+    for i in range(20):
         all_paths = []
         for j in range(30):
             iterate_ants(grid_world, grid_world.start_key)
@@ -210,12 +210,13 @@ def run_aco(grid_world):
     grid_world.aco_best_route = best_path
 
 
-grid_world = GridWorld()
+grid_world = GridWorld(40, 40)
 # Functions.create_grid_from_hex(grid_world)
-Functions.create_random_obstacles(grid_world, 0.205)
+Functions.create_random_obstacles(grid_world, 0.305)
 # Functions.create_fixed_obstacles(grid_world, 6)
 grid_world.scan_grid_and_generate_graph()
 grid_world.print_graph()
+grid_world.save_graph()
 
 pheromone_table = dict()
 init_pheromone(grid_world)

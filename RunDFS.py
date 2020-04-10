@@ -52,7 +52,7 @@ def run_dfs(grid_world):
 
 
 grid_world = GridWorld()
-Functions.create_grid_from_hex(grid_world)
+Functions.create_obstacles_from_hex(grid_world)
 # Functions.create_random_obstacles(grid_world, 0.205)
 # Functions.create_fixed_obstacles(grid_world, 6)
 grid_world.scan_grid_and_generate_graph()

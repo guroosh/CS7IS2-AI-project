@@ -26,6 +26,8 @@ class GridWorld:
         self.aco_best_route = []
         self.padding = 30
         self.current_estimates = []
+        self.a_star_visited_count = 0
+        self.a_star_opened_count = 0
 
         self.m = m
         self.n = n
@@ -49,8 +51,8 @@ class GridWorld:
         self.color_background = 'snow3'
         self.color_walls = 'black'
         self.color_normal = 'white'
-        self.color_visited = 'khaki3'
         self.color_final_path = 'dodger blue'
+        self.color_visited = 'khaki3'
         self.color_final_path2 = 'khaki1'
         self.COLORS = ['snow', 'ghost white', 'white smoke', 'gainsboro', 'floral white', 'old lace',
                        'linen', 'antique white', 'papaya whip', 'blanched almond', 'bisque', 'peach puff',
@@ -274,12 +276,14 @@ class GridWorld:
         # manhattan distance
         x1 = abs(x - self.end_x)
         y1 = abs(y - self.end_y)
-        return x1 + y1
+        # return x1 + y1
+        # return 2 * (x1 + y1)
         # return -x1 + y1
-        # return (x1 + y1) + 2
+        # return x1 + 1.1 * y1 + 5726572
         # return x1 * x1
-        # return (x1 * x1) + (y1 * y1)
-        # return 0  # for dijkstra algorithm
+        return (x1 * x1) + (y1 * y1)
+        # return ((x1 * x1) + (y1 * y1)) ** (1/2)
+        # return 100  # for dijkstra algorithm
 
     def get_reverse_heuristics(self, x, y):
         # manhattan distance
@@ -320,11 +324,13 @@ class GridWorld:
             self.agent = (r[0][0], r[0][1])
             i = r[0][0]
             j = r[0][1]
+            color = r[1]
             if not (i == self.start_x and j == self.start_y) and not (i == self.end_x and j == self.end_y):
                 self.frame.create_rectangle(i * length + self.padding, j * length + self.padding,
                                             i * length + self.padding + length,
-                                            j * length + self.padding + length, fill=r[1])
+                                            j * length + self.padding + length, fill=color)
             self.update_agent_ui(self.agent)
+
         for r in self.a_star_final_route:
             time.sleep(0.01)
             i = r[0]

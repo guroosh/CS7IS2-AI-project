@@ -1,4 +1,5 @@
 import math
+import random
 
 import Functions
 from GridWorld import GridWorld
@@ -33,16 +34,16 @@ def a_star(grid_world):
 
     while open_set:
         current = get_best_node(open_set, f_score)
-        grid_world.a_star_route.append((current, grid_world.color_visited))
         if current == (grid_world.end_x, grid_world.end_y):
             return get_final_path(parent, current)
         # print(open_set)
         # print(current)
         open_set.remove((current[0], current[1]))
         grid_world.a_star_route.append((current, grid_world.color_final_path2))
-
         # print(open_set)
-        for neighbor in grid_world.graph.adjacency_map[str(current[0]) + "," + str(current[1])]:
+        adjacent_nodes = grid_world.graph.adjacency_map[str(current[0]) + "," + str(current[1])]
+        random.shuffle(adjacent_nodes)
+        for neighbor in adjacent_nodes:
             new_g_score = g_score[current[0]][current[1]] + 1
             if new_g_score < g_score[neighbor[0]][neighbor[1]]:
                 parent[neighbor[0]][neighbor[1]] = current
@@ -69,17 +70,27 @@ def main_for_genetic(grid_world):
 
 
 def main_for_a_star():
-    grid_world = GridWorld()
+    grid_world = GridWorld(40, 40)
 
-    # Functions.create_grid_from_hex(grid_world)
-    Functions.create_random_obstacles(grid_world, 0.205)
+    Functions.create_obstacles_from_hex(grid_world)
+    # Functions.create_random_obstacles(grid_world, 0.205)
     # Functions.create_fixed_obstacles(grid_world, 6)
     grid_world.scan_grid_and_generate_graph()
     grid_world.print_graph()
     graph_hex = grid_world.save_graph()
     grid_world.create_grid_ui(grid_world.m, grid_world.n, (grid_world.start_x, grid_world.start_y),
                               (grid_world.end_x, grid_world.end_y), grid_world.obstacles)
-    run_a_star(grid_world)
+    best_path_length = run_a_star(grid_world)
+    for r in grid_world.a_star_route:
+        color = r[1]
+        if color == grid_world.color_visited:
+            grid_world.a_star_visited_count += 1
+        if color == grid_world.color_final_path2:
+            grid_world.a_star_opened_count += 1
+    print(best_path_length,  grid_world.a_star_visited_count, grid_world.a_star_opened_count)
     grid_world.dfs_route = []
     grid_world.move_on_given_route_a_star()
     tk.mainloop()
+
+
+main_for_a_star()
