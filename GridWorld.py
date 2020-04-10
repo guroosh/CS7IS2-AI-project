@@ -8,7 +8,7 @@ from Graph import Graph
 
 class GridWorld:
 
-    def __init__(self, m, n):
+    def __init__(self, m=20, n=20):
         self.height = 700
         self.width = 700
         self.agent = ()
