@@ -93,4 +93,4 @@ def main_for_a_star():
     tk.mainloop()
 
 
-main_for_a_star()
+# main_for_a_star()

@@ -276,12 +276,12 @@ class GridWorld:
         # manhattan distance
         x1 = abs(x - self.end_x)
         y1 = abs(y - self.end_y)
-        # return x1 + y1
+        return x1 + y1
         # return 2 * (x1 + y1)
         # return -x1 + y1
         # return x1 + 1.1 * y1 + 5726572
         # return x1 * x1
-        return (x1 * x1) + (y1 * y1)
+        # return (x1 * x1) + (y1 * y1)
         # return ((x1 * x1) + (y1 * y1)) ** (1/2)
         # return 100  # for dijkstra algorithm
 
