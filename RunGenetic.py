@@ -200,27 +200,30 @@ def genetic_iterations(grid_world, a_star_length):
     grid_world.final_route_genetic = []
     # for i in range(100):  # iterations
     i = 0
+    list_of_best_lengths = []
     while True:
         # call Crossover path function
-        population = crossover2(population)
-        # call population reduction fitness function
-        population = reduce_population(population, starting_population_count)
+        population = crossover(population)
         # Mutate the paths
         population = mutation(grid_world, population)
+        # call population reduction fitness function
+        population = reduce_population(population, starting_population_count)
         avg = 0
         for path in population:
             avg += len(path)
         if len(population[0]) < best_score:
             best_score = len(population[0])
             best_path = population[0]
-        print(i, ':', len(population[0]))
-        if len(population[0]) == a_star_length:
-            # print('Genetic:', best_score, best_path)
-            grid_world.final_route_genetic = best_path
-            return i
-        if i > 300:
-            grid_world.final_route_genetic = best_path
-            return -1 * len(population[0])
+        # print(i, '\t', len(population[0]))
+        list_of_best_lengths.append(len(population[0]))
+        # if len(population[0]) == a_star_length:
+        #     # print('Genetic:', best_score, best_path)
+        #     grid_world.final_route_genetic = best_path
+        #     return i
+        if i >= 50:
+            if list_of_best_lengths[i] == list_of_best_lengths[i - 50]:
+                grid_world.final_route_genetic = best_path
+                return i - 50
         i += 1
     # print('Genetic:', best_score, best_path)
     # grid_world.final_route_genetic = best_path
@@ -234,14 +237,15 @@ def run_genetic(grid_world, a_star_length):
 
 
 # Creating Gridworld Environment
-grid_size = 30
-while grid_size <= 30:
+grid_size = 2
+while grid_size <= 40:
     numeerator = 0
     denomenator = 0
     m = grid_size
     n = grid_size
-    sample_size = 1
-    for samples in range(sample_size):
+    loop_count = 0
+    sample_size = 10
+    while loop_count < sample_size:
         grid_world = GridWorld(m, n)
 
         # Creating grid ui
@@ -253,20 +257,18 @@ while grid_size <= 30:
 
         # Run Genetic Algorithm
         a_star_length = main_for_genetic(grid_world)
-        print('A-STAR length', a_star_length)
-        num_of_iterations_to_converge = run_genetic(grid_world, a_star_length)
-        if num_of_iterations_to_converge == -1:
+        if a_star_length == 0:
             continue
-        if num_of_iterations_to_converge < -2:
-            num_of_iterations_to_converge = 300
+        # print('A-STAR length', a_star_length)
+        num_of_iterations_to_converge = run_genetic(grid_world, a_star_length)
         if num_of_iterations_to_converge >= 0:
             numeerator += num_of_iterations_to_converge
             denomenator += 1
-        grid_world.create_grid_ui(grid_world.m, grid_world.n, (grid_world.start_x, grid_world.start_y),
-                                  (grid_world.end_x, grid_world.end_y), grid_world.obstacles)
-        # Show Best Path
-        grid_world.move_on_given_route_genetic()
-        tk.mainloop()
+        # grid_world.create_grid_ui(grid_world.m, grid_world.n, (grid_world.start_x, grid_world.start_y),
+        #                           (grid_world.end_x, grid_world.end_y), grid_world.obstacles)
+        # grid_world.move_on_given_route_genetic()
+        # tk.mainloop()
+        loop_count += 1
     try:
         print(m, numeerator / denomenator)
     except ZeroDivisionError:
