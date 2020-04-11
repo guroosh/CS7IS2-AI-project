@@ -10,7 +10,7 @@ import tkinter as tk
 class SARSAgent:
     def __init__(self, actions):
         self.actions = actions
-        self.learning_rate = 0.01
+        self.learning_rate = 0.1
         self.discount_factor = 0.9
         self.epsilon = 0.1
         self.q_table = defaultdict(lambda: [0.0, 0.0, 0.0, 0.0])
@@ -58,8 +58,8 @@ if __name__ == "__main__":
                           (grid_world.end_x, grid_world.end_y), grid_world.obstacles)
 
     agent = SARSAgent(actions=list(range(grid_world.action_size)))
-
-    for episode in range(1000):
+    number_of_episodes = 10
+    for episode in range(number_of_episodes):
         # reset environment and initialize state
 
         state = grid_world.reset()
