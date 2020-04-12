@@ -32,7 +32,7 @@ This Project code is available in the root folder of the project repository.
 ##### Results evaluation
 - Results can be seen in the Grid as shown below and also can be evaluated in graphs.
 <p align="center">
-  <img src="GA_Grid.png" width="450" height="450" alt="accessibility text">
+  <img src="GA_Grid.PNG" width="450" height="450" alt="accessibility text">
 </p>
 
 ### Contributions
