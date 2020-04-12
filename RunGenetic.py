@@ -4,7 +4,7 @@ import tkinter as tk
 import Functions
 from GridWorld import GridWorld
 
-from RunAStar import main_for_genetic
+# from RunAStar import main_for_genetic
 
 
 # Random Path Generation Function. This take input of gridworld and the key node to start the randomness
@@ -219,7 +219,7 @@ def genetic_iterations(grid_world, a_star_length, mt):
         if len(population[0]) == a_star_length:
             grid_world.final_route_genetic = best_path
             return len(best_path)
-        if i == 400:
+        if i == 40:
             grid_world.final_route_genetic = best_path
             return len(best_path)
         # Used for convergence experiment with window size 50
@@ -240,11 +240,12 @@ def run_genetic(grid_world, a_star_length, mt):
 
 
 # Creating Gridworld Environment
-grid_size = 15
-while grid_size <= 40:
+grid_size = 20
+while grid_size <= 20:
     numeerator = 0
     denomenator = 0
-    mutation_amount_list = [0, 0.3, 0.5, 0.7, 1]
+    # mutation_amount_list = [0, 0.3, 0.5, 0.7, 1]
+    mutation_amount_list = [0.3]
     num_list = [0 for temp in range(len(mutation_amount_list))]
     den_list = [0 for temp in range(len(mutation_amount_list))]
     num_astar = 0
@@ -252,7 +253,7 @@ while grid_size <= 40:
     m = grid_size
     n = grid_size
     loop_count = 0
-    sample_size = 3
+    sample_size = 1
     while loop_count < sample_size:
         grid_world = GridWorld(m, n)
 
@@ -264,7 +265,8 @@ while grid_size <= 40:
         # grid_world.print_graph()
 
         # Run Genetic Algorithm
-        a_star_length = main_for_genetic(grid_world)
+        # a_star_length = main_for_genetic(grid_world)
+        a_star_length = -1
         if a_star_length == 0:
             continue
         # print('A-STAR length', a_star_length)
@@ -279,10 +281,10 @@ while grid_size <= 40:
             mt_index += 1
         num_astar += a_star_length
         den_astar += 1
-        # grid_world.create_grid_ui(grid_world.m, grid_world.n, (grid_world.start_x, grid_world.start_y),
-        #                           (grid_world.end_x, grid_world.end_y), grid_world.obstacles)
-        # grid_world.move_on_given_route_genetic()
-        # tk.mainloop()
+        grid_world.create_grid_ui(grid_world.m, grid_world.n, (grid_world.start_x, grid_world.start_y),
+                                  (grid_world.end_x, grid_world.end_y), grid_world.obstacles)
+        grid_world.move_on_given_route_genetic()
+        tk.mainloop()
         loop_count += 1
     try:
         print(m, end=', ')
