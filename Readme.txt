@@ -1,44 +1,47 @@
-Readme File for Optimal Path Finding in a GridWorld:
+# Optimal Path Finding in a GridWorld
+----
+Many real-life applications such as **Intelligent Transportation System, Robot Navigation and Internet Routing** can function efficiently when an optimal path between any two points is provided. Path finding algorithms are used to find optimal paths between two nodes in a graph like environment. In this project, various algorithms from different domains are evaluated and compared to find optimal path for traversal in a simulated grid world environment with obstacles.
 
-To RUN code:
+Optimal path finding can be implemented using various State-of-the-art algorithms like ***Breadth-First-Search (BFS), Depth-First-Search (DFS), A-Star (A*), Dijkstra’s algorithm etc.** In this paper we have implemented different classes of algorithm with different constraints. The first algorithm is A-Star which is an informed search algorithm. The second is ***Genetic algorithm (GA),*** which is based on meta-heuristics and improves the results based on the previous iterations. The third implementation is ***Q-learning and State Action Reward State Action (SARSA)*** algorithms which are part of Reinforcement Learning. These algorithms are based on an agent learning the environment by getting feedback on its actions.
 
-A-star:       RunAStar.py
-Genetic:      RunGenetic.py
-Q-Learning:   RunRL.py
-SARSA:        RunSARSA.py
+The environment is a grid world which is de_ned by a sizeM, a start position, a destination and random obstacles. The grid dimensions can be unequal (MxN) but to get an idea of the grid size we have used square grids, where a grid of size M will have dimensions ***MxM*** with the start position on the top left and the destination on the bottom right. The obstacles can be either pre-de_ned or randomly placed such that there isn't an obvious direct path between the start and end positions. For the experiments we have used random obstacles with 20.5% obstacle density. Having low or high density gives straight forward answers, since there are usually straight paths with less obstacles and limited number of paths with more obstacles.
 
-Link to github repository: https://github.com/guroosh/CS7IS2-AI-project
+### Steps to be followed to run various algorithms to find the optimal path:
+----
+This Project code is available in the root folder of the project repository. 
+##### Pre-requisites: 
+- Install Python
+- Insatll dependencies like ***tkinter, matplotlib.pyplot, scipy.ndimage.filters, pylab***
+##### Algorithms Execution: 
+- Run A-Star Algorithm by going to main folder and executing below command in command prompt.
+    ```
+    python RunAStar.py
+    ```
+- Run Genetic Algorithm by going to main folder and executing below command in command prompt.
+    ```
+    python RunGenetic.py
+    ```
+- Run Q-Learning Algorithm by going to main folder and executing below command in command prompt.
+    ```
+    python  RunRL.py
+    ```
+- Run SARSA Algorithm by going to main folder and executing below command in command prompt.
+    ```
+    python  RunSARSA.py
+    ```
+##### Results evaluation
+- Results can be seen in the Grid as shown below and also can be evaluated in graphs.
+<p align="center">
+  <img src="GA_Grid.png" width="450" height="450" alt="accessibility text">
+</p>
 
-Team members Contributions:
-	Ashwin Sundareswaran R:
-		Implemented SARSA algorithm and integrated with the created Gridworld environment.
-		Implemented logic to make the agent not to hit the obstacles and make it learn through the environment.
-		Modified various hyperparameters  like  epsilon value,learning rate to make the agent work efficiently and compared the performance in different simulated grid sizes.
-		I also compared the working of the SARSA agent with A-star to find the difference between the algorithms in terms of finding the path.
-		I also tried implementing deep-SARSA but was not able to succeed within the time.
+### Contributions
+----
+- The main contributors for this project are **Ashwin Sundareswaran R, Kavya Bhadre Gowda, Shubhanghi Kukreti, Chaudhary Guroosh Gabriel Singh.** Find the contribution details under ***"Report and Reference Documents"*** folder ***Readme file***.
+### Todos
+----
+ - Algorithms can be evaluated for variousgrid sizes by making changes in grid and the various parameters affecting individual algorithms.
 
-	Kavya Bhadre Gowda:
-		Worked on Genetic Algorithm in the Grid world environment to find the shortest path.
-		This algorithm involves various stages like Population initialisation, Cross over, Mutation and Population reduction to find the best suitable path for traversal.
-		Did background research work on similar implementations on Genetic Algorithm. Then worked on functions to achieve individual stages of the algorithm as stated below:
-			Generating random paths as chromosomes within a fixed gridworld environment, with fixed obstacles and fixed population count.
-			Choose the two child paths from the parent path and crossover at a random point between two paths and get 2 identical child paths.
-			Selecting random identical points in each crossover path and again mutate them to get a diversified path.
-			Evaluating the paths based on the shortest length of traversal.
-			Worked on report as well along with the team.
-
-	Shubhangi Kukreti: 
-		Implemented Q-learning algorithm in a simulated Gridworld environment. 
-		The algorithm was designed to find the optimal path between two points. 
-		The agent was trained to avoid obstacles by modifying the code to add penalties for hitting obstacles or straying away from the optimal path. 
-		Different values for discount factor and learning rate were tested to find the values that helped in the convergence of the algorithm.
-		The number of iterations as well as time taken for the algorithm to converge were also observed for grids of varying sizes.
-		The time to converge were compared for Q-learning and A* algorithm wherein both algorithms were run on the same grid containing randomly placed obstacles.
-
-	Chaudhary Guroosh Gabriel Singh:
-		Implemented the environment based on a GridWorld using python. 
-		Basic functions were created which helped in the integration of different algorithms. 
-		The functions included: Move agent, make obstacles, create UI instance using the ‘tkinter’ library, create graph, get neighbouring nodes, get heuristics, etc.
-		Implemented A-star (A*) to get the optimal path which would be used by algorithms.
-		Tried different heuristics for A* to see the effect of heuristics on the performance. 
-		Integrated different algorithms with the UI. Ran experiments on A-star and genetic algorithm.
+### License
+----
+Contributions are welcomed.
