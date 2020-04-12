@@ -71,7 +71,7 @@ if __name__ == "__main__":
     
     #grid_world.set_obstacle_reward()
     #Functions.create_random_obstacles(grid_world, 0.05)
-    Functions.create_random_obstacles(grid_world, 0.105)
+    Functions.create_random_obstacles(grid_world, 0.205)
     grid_world.scan_grid_and_generate_graph()
     grid_world.print_graph()
     Functions.create_fixed_obstacles(grid_world, 5)
@@ -96,9 +96,9 @@ if __name__ == "__main__":
             action = agent.get_action(str(state))
             next_state, reward, done = grid_world.step(action)
             agent.learn(str(state), action, reward, str(next_state))
-            if reward != 0:
-                print("<state:{0} , action:{1} , reward:{2} , next_state:{3}>".format(
-                    str(state), str(action), str(reward), str(next_state)))
+            #if reward != 0:
+               # print("<state:{0} , action:{1} , reward:{2} , next_state:{3}>".format(
+                 #   str(state), str(action), str(reward), str(next_state)))
             grid_world.is_visited[state[0]][state[1]] += 1
             state = next_state
             
